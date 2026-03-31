@@ -57,7 +57,7 @@ Client runs on:
 http://localhost:5173
 ```
 
-## Important
+## Important  
 
 - MongoDB should be running
-- Client uses backend on `http://localhost:5000`
+- Client uses backend on `http://localhost:8000`

@@ -1,4 +1,4 @@
-# Junior Full Stack Developer Assignment
+# Ghar Bazzar
 
 This project has:
 

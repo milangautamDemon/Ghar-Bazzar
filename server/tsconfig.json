@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    /* Modules */
+    "module": "CommonJS" /* Specify what module code is generated. */,
+    "allowJs": true,
+    "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
+    "ignoreDeprecations": "6.0" /* Specify how TypeScript looks up a file from a given module specifier. */,
+    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
+    "types": ["node", "express"], // Include global types for node, express
+    "typeRoots": ["node_modules/@types", "src/types"], // Look for types in node_modules/@types and also in ./src/types
+    "paths": {
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@config/*": ["src/config/*"],
+      "@models/*": ["src/models/*"],
+      "@routes/*": ["src/routes/*"],
+      "@src/*": ["src/*"],
+      "express-validator": [
+        "node_modules/express-validator/express-validator.d.ts*"
+      ]
+    } /* Specify a set of entries that re-map imports to additional lookup locations. */,
+    "rootDir": "src" /* Specify the root folder within your source files. */,
+
+    "outDir": "./dist" /* Specify an output folder for all emitted files. */,
+
+    /* Interop Constraints */
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+
+    /* Type Checking */
+    "strict": true /* Enable all strict type-checking options. */,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

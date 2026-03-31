@@ -41,7 +41,7 @@ npm run dev
 Server runs on:
 
 ```text
-http://localhost:5000
+http://localhost:8000
 ```
 
 ### Terminal 2

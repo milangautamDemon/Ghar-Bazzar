@@ -4,13 +4,26 @@ import axios from "axios";
 import API from "../../api/api";
 import toast from "react-hot-toast";
 import { loginSchema } from "./schema";
+import { UserRole } from "../../types/userRole";
 
 type FieldErrors = {
   email?: string;
   password?: string;
 };
 
-const Login = () => {
+type LoginProps = {
+  onLogin: (auth: {
+    token: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: UserRole;
+    };
+  }) => void;
+};
+
+const Login = ({ onLogin }: LoginProps) => {
   const navigate = useNavigate();
 
   // States
@@ -39,7 +52,8 @@ const Login = () => {
         email,
         password,
       });
-      const token = res.data?.data;
+      const authData = res.data?.data;
+      const token = authData?.token;
 
       if (!token) {
         toast.error("Login failed: No token received from server!");
@@ -47,9 +61,11 @@ const Login = () => {
       }
 
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(authData.user));
+      onLogin(authData);
 
       toast.success("Login successful!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast.error(

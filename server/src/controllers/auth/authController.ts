@@ -65,7 +65,15 @@ export const loginController: RequestHandler = async (req, res) => {
     };
 
     const { accessToken } = generateTokens(tokenPayload);
-    return responseToClient(res, true, 200, "Login successful !", accessToken);
+    return responseToClient(res, true, 200, "Login successful !", {
+      token: accessToken,
+      user: {
+        id: verifyPassword._id.toString(),
+        name: verifyPassword.name,
+        email: verifyPassword.email,
+        role: verifyPassword.role,
+      },
+    });
   } catch (error) {
     errorHandler(error as Error, res);
   }

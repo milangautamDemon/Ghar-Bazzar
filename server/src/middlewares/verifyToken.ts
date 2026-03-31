@@ -2,40 +2,56 @@ import Jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { responseToClient } from "@utils/response";
 import redisClient, { isRedisReady } from "@src/redisClient";
+import { AuthenticatedRequest } from "@src/types/authRequest";
 import { decryptPayload } from "@utils/decryptPayload";
 import userService from "@services/user/userService";
 import { TokenPayload } from "@utils/generateToken";
 
-const deny = (req: Request, res: Response, message: string) => {
-  console.warn(`[AUTH] 401 ${req.method} ${req.originalUrl} - ${message}`);
-  return responseToClient(res, false, 401, message);
-};
+// const deny = (req: Request, res: Response, message: string) => {
+//   console.warn(`[AUTH] 401 ${req.method} ${req.originalUrl} - ${message}`);
+//   return responseToClient(res, false, 401, message);
+// };
 
 export const verifyToken = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return deny(req, res, "Authorization header is missing!");
+    return responseToClient(
+      res,
+      false,
+      401,
+      "Authorization header is missing!",
+    );
   }
 
   if (!authHeader.startsWith("Bearer ")) {
-    return deny(req, res, "Authorization format must be: Bearer <token>");
+    return responseToClient(
+      res,
+      false,
+      401,
+      "Authorization format must be: Bearer <token>",
+    );
   }
 
   const token = authHeader.slice(7).trim();
   if (!token) {
-    return deny(req, res, "Access token is missing!");
+    return responseToClient(res, false, 401, "Access token is missing!");
   }
 
   try {
     if (isRedisReady()) {
       const isBlacklisted = await redisClient.get(`blacklist:${token}`);
       if (isBlacklisted) {
-        return deny(req, res, "Token is blacklisted. Please login again!");
+        return responseToClient(
+          res,
+          false,
+          401,
+          "Token is blacklisted. Please login again!",
+        );
       }
     }
 
@@ -46,7 +62,7 @@ export const verifyToken = async (
 
     const encryptedData = tokenVerify?.data;
     if (!encryptedData) {
-      return deny(req, res, "Token payload is invalid!");
+      return responseToClient(res, false, 401, "Token payload is invalid!");
     }
 
     const decrypted = decryptPayload(encryptedData);
@@ -54,31 +70,46 @@ export const verifyToken = async (
     const id = payload?.user?.id;
 
     if (!id) {
-      return deny(req, res, "Token user payload is missing!");
+      return responseToClient(
+        res,
+        false,
+        401,
+        "Token user payload is missing!",
+      );
     }
 
     const user = await userService.getUserById(id);
     if (!user) {
-      return deny(req, res, "User for this token does not exist!");
+      return responseToClient(
+        res,
+        false,
+        401,
+        "User for this token does not exist!",
+      );
     }
 
-    (req as any).user = {
-      id,
+    req.user = {
       userId: id,
-      email: user.email,
+      email: user.email ?? "",
       name: user.name,
+      role: user.role,
     };
 
     next();
   } catch (error) {
     if (error instanceof Jwt.TokenExpiredError) {
-      return deny(req, res, "Token expired. Please login again!");
+      return responseToClient(
+        res,
+        false,
+        401,
+        "Token expired. Please login again!",
+      );
     }
 
     if (error instanceof Jwt.JsonWebTokenError) {
-      return deny(req, res, "Invalid token!");
+      return responseToClient(res, false, 401, "Invalid token!");
     }
 
-    return deny(req, res, "Invalid or expired token!");
+    return responseToClient(res, false, 401, "Invalid or expired token!");
   }
 };

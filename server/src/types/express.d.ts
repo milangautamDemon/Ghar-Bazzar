@@ -1,15 +1,21 @@
-import { PAYMENT_METHOD } from "@models/payments/paymentEnum";
-import { UserDocument } from "../models/User";
+import { UserRole } from "@models/user/userRoleEnum";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserDocument; // The authenticated user object
+      user?: {
+        userId: string;
+        email: string;
+        name: string;
+        role: UserRole;
+      };
       tokenPayload?: {
         user: {
           id: string;
         };
-      }; // Decoded token payload
+      };
     }
   }
 }
+
+export {};

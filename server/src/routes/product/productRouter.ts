@@ -4,6 +4,9 @@ import {
   getAllProductsController,
   getProductByIdController,
 } from "@controllers/product/productController";
+import { verifyRole } from "@middlewares/verifyRole";
+import { verifyToken } from "@middlewares/verifyToken";
+import { UserRole } from "@models/user/userRoleEnum";
 import { deleteRequestFile } from "@utils/deleteUploadedFile";
 import { productImageValidation } from "@controllers/product/productImageValidator";
 import { fileDetails } from "@utils/fileTypeUtils";
@@ -13,6 +16,8 @@ export const productRouter = Router();
 
 productRouter.post(
   "/product",
+  verifyToken,
+  verifyRole(UserRole.ADMIN),
   async (req, res, next) => {
     productImageValidation(req, res, (err) => {
       if (err) {

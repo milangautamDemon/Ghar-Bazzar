@@ -1,13 +1,18 @@
 import { UserRole } from "@models/user/userRoleEnum";
 import userService from "@services/user/userService";
-import { responseToClient } from "@utils/response.js";
-import { Request, Response, NextFunction } from "express";
+import { AuthenticatedRequest } from "@src/types/authRequest";
+import { responseToClient } from "@utils/response";
+import { Response, NextFunction } from "express";
 import { errorHandler } from "./errorMiddleware";
 
 export const verifyRole = (role: UserRole) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { userId } = req.user;
+      const userId = req.user?.userId;
       if (!userId) {
         return responseToClient(res, false, 400, "User ID is Required!");
       }

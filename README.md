@@ -24,6 +24,7 @@ This project has:
 - MongoDB
 - Authentication APIs
 - Favourite APIs
+- Product APIs
 
 ## How To Run
 

@@ -8,11 +8,12 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register src/server.ts'",
+    "dev": "npm run seed && nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register src/server.ts'",
     "build": "rimraf dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "start": "node dist/server.js",
+    "start": "node dist/seed/adminSeed.js && node dist/server.js",
     "build:dev": "run-s build dev",
-    "build:start": "run-s build start"
+    "build:start": "run-s build start",
+    "seed": "ts-node -r tsconfig-paths/register src/seed/adminSeed.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

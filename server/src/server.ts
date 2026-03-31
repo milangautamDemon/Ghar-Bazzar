@@ -2,7 +2,7 @@ import express from "express";
 import type { Application } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "@config/database";
+import connectDB from "@db/database";
 import authRouter from "@routes/auth/authRouter";
 import favRouter from "@routes/fav/favRouter";
 // import authDebugLogger from "@middlewares/authDebugLogger";
